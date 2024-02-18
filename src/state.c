@@ -51,6 +51,12 @@ bool init_state(struct k_state *state) {
 
 bool start_backend(struct k_state *state) {
   init_output(state);
+
+  // create the scene
+  state->scene = wlr_scene_create();
+  state->scene_layout =
+    wlr_scene_attach_output_layout(state->scene, state->output_layout);
+
   // create socket
   const char *socket = wl_display_add_socket_auto(state->display);
   if (!socket) {
@@ -67,6 +73,9 @@ bool start_backend(struct k_state *state) {
   }
 
   setenv("WAYLAND_DISPLAY", socket, true);
+
+  // create device manager
+  wlr_data_device_manager_create(state->display);
 
   return true;
 }
