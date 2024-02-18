@@ -30,6 +30,10 @@ struct k_state {
   struct wlr_seat *seat;
   struct wlr_output_layout *output_layout;
   struct wlr_scene *scene;
+  struct wlr_scene_output_layout *scene_layout;
+
+  struct wlr_xdg_output_manager_v1 *xdg_output_manager;
+  struct wlr_output_manager_v1 *wlr_output_manager;
 
   // Listeners for state events
   struct wl_listener new_input;

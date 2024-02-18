@@ -1,4 +1,5 @@
 #include "state.h"
+#include "output.h"
 
 bool init_state(struct k_state *state) {
   // create display
@@ -41,10 +42,15 @@ bool init_state(struct k_state *state) {
   // output layout
   state->output_layout = wlr_output_layout_create();
 
+  // output manager
+  state->xdg_output_manager =
+      wlr_xdg_output_manager_v1_create(state->display, state->output_layout);
+
   return true;
 }
 
 bool start_backend(struct k_state *state) {
+  init_output(state);
   // create socket
   const char *socket = wl_display_add_socket_auto(state->display);
   if (!socket) {
