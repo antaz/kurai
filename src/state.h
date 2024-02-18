@@ -17,28 +17,26 @@
 
 #include <stdlib.h>
 
-struct k_state
-{
-	struct wl_display *display;
-	struct wl_event_loop *event_loop;
+struct k_state {
+  struct wl_display *display;
+  struct wl_event_loop *event_loop;
 
-	struct wlr_allocator *allocator;
-	struct wlr_backend *backend;
-	struct wlr_compositor *compositor;
-	struct wlr_subcompositor *subcompositor;
-	struct wlr_renderer *renderer;
-	struct wlr_session *session;
-	struct wlr_seat *seat;
-	struct wlr_output_layout *output_layout;
-	struct wlr_scene *scene;
+  struct wlr_allocator *allocator;
+  struct wlr_backend *backend;
+  struct wlr_compositor *compositor;
+  struct wlr_subcompositor *subcompositor;
+  struct wlr_renderer *renderer;
+  struct wlr_session *session;
+  struct wlr_seat *seat;
+  struct wlr_output_layout *output_layout;
+  struct wlr_scene *scene;
 
-	// Listeners for state events
-	struct wl_listener new_input;
-	struct wl_listener new_output;
+  // Listeners for state events
+  struct wl_listener new_input;
+  struct wl_listener new_output;
 
-	// Lists
-	struct wl_list outputs;
-
+  // Lists
+  struct wl_list outputs;
 };
 
 bool init_state(struct k_state *state);
