@@ -9,6 +9,15 @@ struct k_output {
   struct wlr_output *wlr_output;
   struct wlr_scene_output *scene_output;
 
+  // layers
+  struct {
+    struct wlr_scene_tree *shell_background;
+    struct wlr_scene_tree *shell_bottom;
+    struct wlr_scene_tree *shell_fullscreen;
+    struct wlr_scene_tree *shell_overlay;
+    struct wlr_scene_tree *shell_top;
+  } layers;
+
   struct wlr_box geometry;
 
   // output events
