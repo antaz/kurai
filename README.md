@@ -1,5 +1,5 @@
 # Kurai
-**WIP** simple `wlroots` based compositor
+**WIP** simple `wlroots` based wayland compositor
 
 ## build
 ```
