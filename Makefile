@@ -16,7 +16,8 @@ BDIR		= build
 # Flags
 CFLAGS		= -Wall -Wextra -Werror
 CPPFLAGS	= -DWLR_USE_UNSTABLE=1 -I/usr/include/libdrm -I/usr/include/pixman-1
-LDFLAGS		= -lwlroots
+LDFLAGS		= 
+LDLIBS      = -lwayland-server -lwlroots
 
 # architecture
 ARCH		= -march=native
