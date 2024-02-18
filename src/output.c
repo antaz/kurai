@@ -1,15 +1,12 @@
 #include "output.h"
 
 void output_frame(struct wl_listener *listener, void *data) {
-  struct k_output *output = wl_container_of(listener, output, destroy);
+  struct k_output *output = wl_container_of(listener, output, frame);
   struct wlr_scene *scene = output->state->scene;
   struct wlr_scene_output *scene_output =
       wlr_scene_get_scene_output(scene, output->wlr_output);
 
   wlr_scene_output_commit(scene_output, NULL);
-
-  struct wlr_output_state pending;
-  wlr_output_state_finish(&pending);
 
   struct timespec now;
   clock_gettime(CLOCK_MONOTONIC, &now);
@@ -17,7 +14,7 @@ void output_frame(struct wl_listener *listener, void *data) {
 }
 
 void output_request_state(struct wl_listener *listener, void *data) {
-  struct k_output *output = wl_container_of(listener, output, destroy);
+  struct k_output *output = wl_container_of(listener, output, request_state);
   const struct wlr_output_event_request_state *event = data;
 
   wlr_output_commit_state(output->wlr_output, event->state);
@@ -57,8 +54,16 @@ void new_output(struct wl_listener *listener, void *data) {
 
   // initialize our output state
   struct k_output *output = calloc(1, sizeof(struct k_output));
+  output->state = state;
   output->wlr_output = wlr_output;
   wlr_output->data = output;
+
+  /* Initializes the layers */
+  size_t num_layers = sizeof(output->layers) / sizeof(struct wlr_scene_node *);
+  for (size_t i = 0; i < num_layers; i++) {
+    ((struct wlr_scene_node **) &output->layers)[i] =
+      &wlr_scene_tree_create(&state->scene->tree)->node;
+  }
 
   // insert output into list
   wl_list_insert(&state->outputs, &output->link);
@@ -73,15 +78,21 @@ void new_output(struct wl_listener *listener, void *data) {
   output->destroy.notify = output_destroy;
   wl_signal_add(&wlr_output->events.destroy, &output->destroy);
 
+  // output configuration
   struct wlr_output_configuration_v1 *configuration =
       wlr_output_configuration_v1_create();
   wlr_output_configuration_head_v1_create(configuration, wlr_output);
   wlr_output_manager_v1_set_configuration(state->wlr_output_manager,
                                           configuration);
-
+  
   // add output layout
   struct wlr_output_layout_output *l_output =
       wlr_output_layout_add_auto(state->output_layout, wlr_output);
+
+  if (!l_output){
+    return;
+  }
+  
   output->scene_output = wlr_scene_output_create(state->scene, wlr_output);
   wlr_scene_output_layout_add_output(state->scene_layout, l_output,
                                      output->scene_output);
