@@ -1,8 +1,8 @@
 VERSION		= 0.1
 
 # toolchain
-CC		= clang
-LD		= clang
+CC		= cc
+LD		= cc
 AR		= ar
 TAR		= tar
 TAG		= etags
@@ -24,7 +24,7 @@ ARCH		= -march=native
 
 # build mode
 ifneq ($(DEBUG), )
-	CFLAGS  	+= -O0 -g
+	CFLAGS  	+= -O0 -g -fsanitize=address
 	CPPFLAGS	+= -DDEBUG -Wno-unused-variable -Wno-unused-parameter
 	BDIR	 	= build/debug
 else
@@ -36,7 +36,7 @@ endif
 all: $(BDIR)/kurai
 
 $(BDIR)/kurai: $(BDIR)/kurai.o $(BDIR)/kurai.a
-	$(LD) $(LDFLAGS) $^ $(LDLIBS) -o $@
+	$(LD) $(LDFLAGS) $(CFLAGS) $^ $(LDLIBS) -o $@
 
 $(BDIR)/kurai.a: $(filter-out %/kurai.o,$(patsubst src/%.c,$(BDIR)/%.o,$(wildcard src/*.c)))
 
@@ -45,7 +45,7 @@ $(BDIR)/%.a:
 
 $(BDIR)/%.o: %.c $(BDIR)/%.d
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(ARCH) -c -o $@ $<
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $<
 
 $(BDIR)/%.d: %.c
 	@mkdir -p $(@D)
