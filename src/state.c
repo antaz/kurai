@@ -55,7 +55,7 @@ bool start_backend(struct k_state *state) {
   // create the scene
   state->scene = wlr_scene_create();
   state->scene_layout =
-    wlr_scene_attach_output_layout(state->scene, state->output_layout);
+      wlr_scene_attach_output_layout(state->scene, state->output_layout);
 
   // create socket
   const char *socket = wl_display_add_socket_auto(state->display);

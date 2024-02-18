@@ -2,8 +2,7 @@
 
 #include "state.h"
 
-int main()
-{
+int main() {
   wlr_log_init(WLR_DEBUG, NULL);
 
   struct k_state state = {0};

@@ -61,8 +61,8 @@ void new_output(struct wl_listener *listener, void *data) {
   /* Initializes the layers */
   size_t num_layers = sizeof(output->layers) / sizeof(struct wlr_scene_node *);
   for (size_t i = 0; i < num_layers; i++) {
-    ((struct wlr_scene_node **) &output->layers)[i] =
-      &wlr_scene_tree_create(&state->scene->tree)->node;
+    ((struct wlr_scene_node **)&output->layers)[i] =
+        &wlr_scene_tree_create(&state->scene->tree)->node;
   }
 
   // insert output into list
@@ -84,15 +84,15 @@ void new_output(struct wl_listener *listener, void *data) {
   wlr_output_configuration_head_v1_create(configuration, wlr_output);
   wlr_output_manager_v1_set_configuration(state->wlr_output_manager,
                                           configuration);
-  
+
   // add output layout
   struct wlr_output_layout_output *l_output =
       wlr_output_layout_add_auto(state->output_layout, wlr_output);
 
-  if (!l_output){
+  if (!l_output) {
     return;
   }
-  
+
   output->scene_output = wlr_scene_output_create(state->scene, wlr_output);
   wlr_scene_output_layout_add_output(state->scene_layout, l_output,
                                      output->scene_output);
