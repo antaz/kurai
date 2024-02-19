@@ -15,7 +15,7 @@ BDIR		= build
 
 # Flags
 CFLAGS		= -Wall
-CPPFLAGS	= -DWLR_USE_UNSTABLE=1 -I/usr/include/libdrm -I/usr/include/pixman-1
+CPPFLAGS	= -DWLR_USE_UNSTABLE=1 -I/usr/include/libdrm -I/usr/include/pixman-1 -Isrc
 LDFLAGS		= 
 LDLIBS      = -lwayland-server -lwlroots
 
@@ -25,7 +25,7 @@ ARCH		= -march=native
 # build mode
 ifneq ($(DEBUG), )
 	CFLAGS  	+= -Wextra -Werror -g -O0 -fsanitize=address
-	CPPFLAGS	+= -DDEBUG -Wno-unused-variable -Wno-unused-parameter -Isrc
+	CPPFLAGS	+= -DDEBUG -Wno-unused-variable -Wno-unused-parameter
 	BDIR	 	= build/debug
 else
 	CFLAGS  	+= -O3
