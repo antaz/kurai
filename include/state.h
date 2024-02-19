@@ -52,6 +52,9 @@ struct k_state {
 
   // grabbed toplevel
   struct k_toplevel *grabbed_toplevel;
+  struct wlr_box grab_geobox;
+  double grab_x, grab_y;
+  uint32_t resize_edges;
 };
 
 bool init_state(struct k_state *state);

@@ -1,4 +1,5 @@
 #include "xdg_shell.h"
+#include "cursor.h"
 
 void focus_toplevel(struct k_toplevel *toplevel, struct wlr_surface *surface) {
   if (toplevel == NULL ||
@@ -29,6 +30,40 @@ void focus_toplevel(struct k_toplevel *toplevel, struct wlr_surface *surface) {
     wlr_seat_keyboard_notify_enter(seat, toplevel->xdg_toplevel->base->surface,
                                    keyboard->keycodes, keyboard->num_keycodes,
                                    &keyboard->modifiers);
+  }
+}
+
+void begin_interactive(struct k_toplevel *toplevel, enum k_cursor_mode mode,
+                       uint32_t edges) {
+  struct k_state *state = toplevel->state;
+  struct wlr_surface *focused_surface =
+      state->seat->pointer_state.focused_surface;
+  if (toplevel->xdg_toplevel->base->surface !=
+      wlr_surface_get_root_surface(focused_surface)) {
+    return;
+  }
+
+  state->grabbed_toplevel = toplevel;
+  state->cursor->cursor_mode = mode;
+  if (mode == K_CURSOR_MOVE) {
+    state->grab_x = state->cursor->wlr_cursor->x - toplevel->scene_tree->node.x;
+    state->grab_y = state->cursor->wlr_cursor->y - toplevel->scene_tree->node.y;
+  } else {
+    struct wlr_box geo_box;
+    wlr_xdg_surface_get_geometry(toplevel->xdg_toplevel->base, &geo_box);
+
+    double border_x = (toplevel->scene_tree->node.x + geo_box.x) +
+                      ((edges & WLR_EDGE_RIGHT) ? geo_box.width : 0);
+    double border_y = (toplevel->scene_tree->node.y + geo_box.y) +
+                      ((edges & WLR_EDGE_BOTTOM) ? geo_box.height : 0);
+    state->grab_x = state->cursor->wlr_cursor->x - border_x;
+    state->grab_y = state->cursor->wlr_cursor->y - border_y;
+
+    state->grab_geobox = geo_box;
+    state->grab_geobox.x += toplevel->scene_tree->node.x;
+    state->grab_geobox.y += toplevel->scene_tree->node.y;
+
+    state->resize_edges = edges;
   }
 }
 
@@ -65,9 +100,18 @@ static void toplevel_request_maximize(struct wl_listener *listener,
 static void toplevel_request_minimize(struct wl_listener *listener,
                                       void *data) {}
 
-static void toplevel_request_move(struct wl_listener *listener, void *data) {}
+static void toplevel_request_move(struct wl_listener *listener, void *data) {
+  struct k_toplevel *toplevel =
+      wl_container_of(listener, toplevel, request_move);
+  begin_interactive(toplevel, K_CURSOR_MOVE, 0);
+}
 
-static void toplevel_request_resize(struct wl_listener *listener, void *data) {}
+static void toplevel_request_resize(struct wl_listener *listener, void *data) {
+  struct k_toplevel *toplevel =
+      wl_container_of(listener, toplevel, request_resize);
+  struct wlr_xdg_toplevel_resize_event *event = data;
+  begin_interactive(toplevel, K_CURSOR_RESIZE, event->edges);
+}
 
 void new_xdg_toplevel(struct wl_listener *listener, void *data) {
   struct k_state *state = wl_container_of(listener, state, new_xdg_surface);

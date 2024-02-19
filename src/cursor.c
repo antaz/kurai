@@ -24,10 +24,65 @@ struct k_toplevel *toplevel_at(struct k_state *state, double lx, double ly,
   return tree->node.data;
 }
 
+static void process_cursor_move(struct k_state *state) {
+  struct k_toplevel *toplevel = state->grabbed_toplevel;
+  if (toplevel->scene_tree->node.type == WLR_SCENE_NODE_TREE) {
+    toplevel->geometry.x = state->cursor->wlr_cursor->x - state->grab_x;
+    toplevel->geometry.y = state->cursor->wlr_cursor->y - state->grab_y;
+    wlr_scene_node_set_position(&toplevel->scene_tree->node,
+                                toplevel->geometry.x, toplevel->geometry.y);
+  }
+}
+
+static void process_cursor_resize(struct k_state *state) {
+  struct k_toplevel *toplevel = state->grabbed_toplevel;
+  double border_x = state->cursor->wlr_cursor->x - state->grab_x;
+  double border_y = state->cursor->wlr_cursor->y - state->grab_y;
+  int new_left = state->grab_geobox.x;
+  int new_right = state->grab_geobox.x + state->grab_geobox.width;
+  int new_top = state->grab_geobox.y;
+  int new_bottom = state->grab_geobox.y + state->grab_geobox.height;
+
+  if (state->resize_edges & WLR_EDGE_TOP) {
+    new_top = border_y;
+    if (new_top >= new_bottom) {
+      new_top = new_bottom - 1;
+    }
+  } else if (state->resize_edges & WLR_EDGE_BOTTOM) {
+    new_bottom = border_y;
+    if (new_bottom <= new_top) {
+      new_bottom = new_top + 1;
+    }
+  }
+
+  if (state->resize_edges & WLR_EDGE_LEFT) {
+    new_left = border_x;
+    if (new_left >= new_right) {
+      new_left = new_right - 1;
+    }
+  } else if (state->resize_edges & WLR_EDGE_RIGHT) {
+    new_right = border_x;
+    if (new_right <= new_left) {
+      new_right = new_left + 1;
+    }
+  }
+
+  struct wlr_box geo_box;
+  wlr_xdg_surface_get_geometry(toplevel->xdg_toplevel->base, &geo_box);
+  wlr_scene_node_set_position(&toplevel->scene_tree->node, new_left - geo_box.x,
+                              new_top - geo_box.y);
+
+  int new_width = new_right - new_left;
+  int new_height = new_bottom - new_top;
+  wlr_xdg_toplevel_set_size(toplevel->xdg_toplevel, new_width, new_height);
+}
+
 static void process_cursor_motion(struct k_state *state, uint32_t time) {
   if (state->cursor->cursor_mode == K_CURSOR_MOVE) {
+    process_cursor_move(state);
     return;
   } else if (state->cursor->cursor_mode == K_CURSOR_RESIZE) {
+    process_cursor_resize(state);
     return;
   }
 
