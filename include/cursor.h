@@ -28,7 +28,7 @@ struct k_cursor {
   struct wl_listener request_cursor;
 };
 
-void init_cursor(struct k_state *state);
+void init_cursor(struct k_state *state, struct wlr_input_device *device);
 void destroy_cursor(struct k_cursor *cursor);
 
 #endif /* CURSOR_H */
