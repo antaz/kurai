@@ -43,6 +43,9 @@ bool init_state(struct k_state *state) {
   // output layout
   state->output_layout = wlr_output_layout_create();
 
+  // create seat
+  state->seat = wlr_seat_create(state->display, "seat0");
+
   // output manager
   state->xdg_output_manager =
       wlr_xdg_output_manager_v1_create(state->display, state->output_layout);
