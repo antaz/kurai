@@ -81,6 +81,10 @@ bool start_backend(struct k_state *state) {
   // create device manager
   wlr_data_device_manager_create(state->display);
 
+  // initialize toplevels list
+  wl_list_init(&state->toplevels);
+
+  // initialize xdg shell
   init_xdg_shell(state);
 
   return true;
