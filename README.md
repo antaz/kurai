@@ -11,3 +11,8 @@
 ```
 make -j4
 ```
+
+## Run
+foot is a wayland terminal
+```
+./build/release/kurai -s /bin/foot
