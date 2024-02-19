@@ -1,38 +1,34 @@
 #include "xdg_shell.h"
 
 void focus_toplevel(struct k_toplevel *toplevel, struct wlr_surface *surface) {
-  if (toplevel == NULL || toplevel->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL) {
+  if (toplevel == NULL ||
+      toplevel->xdg_toplevel->base->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL) {
     return;
   }
 
-  struct wlr_xdg_surface *xdg_surface = wlr_xdg_surface_try_from_wlr_surface(surface);
+  struct wlr_xdg_surface *xdg_surface =
+      wlr_xdg_surface_try_from_wlr_surface(surface);
 
-  struct k_state *state = toplevel->state;  
+  struct k_state *state = toplevel->state;
   struct wlr_seat *seat = state->seat;
   struct wlr_surface *prev_surface = seat->keyboard_state.focused_surface;
 
-  if(prev_surface) {
+  if (prev_surface) {
     struct wlr_xdg_toplevel *prev_toplevel =
-      wlr_xdg_toplevel_try_from_wlr_surface(prev_surface);
+        wlr_xdg_toplevel_try_from_wlr_surface(prev_surface);
     if (prev_toplevel != NULL) {
       wlr_xdg_toplevel_set_activated(prev_toplevel, false);
     }
   }
   struct wlr_keyboard *keyboard = wlr_seat_get_keyboard(seat);
-  /* Move the toplevel to the front */
   wlr_scene_node_raise_to_top(&toplevel->scene_tree->node);
   wl_list_remove(&toplevel->link);
   wl_list_insert(&state->toplevels, &toplevel->link);
-  /* Activate the new surface */
   wlr_xdg_toplevel_set_activated(toplevel->xdg_toplevel, true);
-  /*
-   * Tell the seat to have the keyboard enter this surface. wlroots will keep
-   * track of this and automatically send key events to the appropriate
-   * clients without additional work on your part.
-   */
   if (keyboard != NULL) {
     wlr_seat_keyboard_notify_enter(seat, toplevel->xdg_toplevel->base->surface,
-      keyboard->keycodes, keyboard->num_keycodes, &keyboard->modifiers);
+                                   keyboard->keycodes, keyboard->num_keycodes,
+                                   &keyboard->modifiers);
   }
 }
 

@@ -86,19 +86,20 @@ static void cursor_button(struct wl_listener *listener, void *data) {
   struct k_cursor *cursor = wl_container_of(listener, cursor, button);
   struct wlr_pointer_button_event *event = data;
 
-  wlr_seat_pointer_notify_button(cursor->state->seat,
-			event->time_msec, event->button, event->state);
+  wlr_seat_pointer_notify_button(cursor->state->seat, event->time_msec,
+                                 event->button, event->state);
 
   double sx, sy;
-	struct wlr_surface *surface = NULL;
-	struct k_toplevel *toplevel = toplevel_at(cursor->state,
-			cursor->state->cursor->wlr_cursor->x, cursor->state->cursor->wlr_cursor->y, &surface, &sx, &sy);
-	if (event->state == WLR_BUTTON_RELEASED) {
-		cursor->cursor_mode = K_CURSOR_PASSTHROUGH;
-		cursor->state->grabbed_toplevel = NULL;
-	} else {
-		focus_toplevel(toplevel, surface);
-	}
+  struct wlr_surface *surface = NULL;
+  struct k_toplevel *toplevel =
+      toplevel_at(cursor->state, cursor->state->cursor->wlr_cursor->x,
+                  cursor->state->cursor->wlr_cursor->y, &surface, &sx, &sy);
+  if (event->state == WLR_BUTTON_RELEASED) {
+    cursor->cursor_mode = K_CURSOR_PASSTHROUGH;
+    cursor->state->grabbed_toplevel = NULL;
+  } else {
+    focus_toplevel(toplevel, surface);
+  }
 }
 
 static void request_cursor(struct wl_listener *listener, void *data) {
@@ -140,8 +141,7 @@ void init_cursor(struct k_state *state, struct wlr_input_device *device) {
                 &cursor->motion_absolute);
 
   cursor->button.notify = cursor_button;
-  wl_signal_add(&cursor->wlr_cursor->events.button,
-                &cursor->button);
+  wl_signal_add(&cursor->wlr_cursor->events.button, &cursor->button);
 
   cursor->request_cursor.notify = request_cursor;
   wl_signal_add(&state->seat->events.request_set_cursor,
