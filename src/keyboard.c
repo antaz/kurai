@@ -54,7 +54,14 @@ wlr_seat_keyboard_notify_modifiers(keyboard->state->seat,
 		&keyboard->wlr_keyboard->modifiers);
 }
 
-static void keyboard_destroy(struct wl_listener *listener, void *data) {}
+static void keyboard_destroy(struct wl_listener *listener, void *data) {
+struct k_keyboard *keyboard = wl_container_of(listener, keyboard, destroy);
+wl_list_remove(&keyboard->modifiers.link);
+wl_list_remove(&keyboard->key.link);
+wl_list_remove(&keyboard->destroy.link);
+wl_list_remove(&keyboard->link);
+free(keyboard);
+}
 
 void init_keyboard(struct k_state *state, struct wlr_input_device *device) {
   struct k_keyboard *keyboard = calloc(1, sizeof(struct k_keyboard));
