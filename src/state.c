@@ -1,4 +1,6 @@
 #include "state.h"
+#include "cursor.h"
+#include "input.h"
 #include "output.h"
 #include "xdg_shell.h"
 
@@ -55,6 +57,7 @@ bool init_state(struct k_state *state) {
 
 bool start_backend(struct k_state *state) {
   init_output(state);
+  init_input(state);
 
   // create the scene
   state->scene = wlr_scene_create();
@@ -91,6 +94,7 @@ bool start_backend(struct k_state *state) {
 }
 
 void destroy_state(struct k_state *state) {
+  destroy_cursor(state->cursor);
   wl_display_destroy_clients(state->display);
   wlr_output_layout_destroy(state->output_layout);
   wl_display_destroy(state->display);

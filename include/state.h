@@ -28,10 +28,12 @@ struct k_state {
   struct wlr_subcompositor *subcompositor;
   struct wlr_renderer *renderer;
   struct wlr_session *session;
-  struct wlr_seat *seat;
   struct wlr_output_layout *output_layout;
   struct wlr_scene *scene;
   struct wlr_scene_output_layout *scene_layout;
+
+  struct k_cursor *cursor;
+  struct wlr_seat *seat;
 
   struct wlr_xdg_output_manager_v1 *xdg_output_manager;
   struct wlr_output_manager_v1 *wlr_output_manager;
