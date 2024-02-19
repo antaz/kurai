@@ -1,5 +1,6 @@
 #include "input.h"
 #include "cursor.h"
+#include "keyboard.h"
 
 void new_input(struct wl_listener *listener, void *data) {
   struct k_state *state = wl_container_of(listener, state, new_input);
@@ -8,6 +9,7 @@ void new_input(struct wl_listener *listener, void *data) {
   case WLR_INPUT_DEVICE_KEYBOARD:
     wlr_log(WLR_INFO, "New keyboard\n");
     // handle keyboard device
+    init_keyboard(state, device);
     break;
   case WLR_INPUT_DEVICE_POINTER:
     wlr_log(WLR_INFO, "New pointer\n");
