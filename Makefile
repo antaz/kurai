@@ -36,7 +36,7 @@ else
 	BDIR	 	= build/release
 endif
 
-all: $(BDIR)/kurai $(patsubst protocol/%.xml, $(INCLUDE)/%.h, $(wildcard protocol/*.xml))
+all: $(patsubst protocol/%.xml, $(INCLUDE)/%.h, $(wildcard protocol/*.xml)) $(BDIR)/kurai 
 
 include/%.h: protocol/%.xml
 	wayland-scanner server-header $< $@
@@ -82,9 +82,7 @@ format:
 	clang-format -i -style=file **/*.c **/*.h
 
 clean:
-	@rm -f $(BDIR)/*.o
-	@rm -f $(BDIR)/*.a
-	@rm -f $(BDIR)/*.d
-	@rm -f $(BDIR)/kurai
+	@rm -f $(patsubst protocol/%.xml, $(INCLUDE)/%.h, $(wildcard protocol/*.xml))
+	@rm -rf build/*
 
 .PHONY: all check dist install dist-clean tags clean
