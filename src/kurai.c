@@ -35,7 +35,6 @@ int main(int argc, char **argv) {
     return 0;
   }
 
-
   if (!init_state(&state)) {
     wlr_log(WLR_ERROR, "Failed to initialize state");
   }
