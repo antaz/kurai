@@ -28,7 +28,7 @@ ARCH		= -march=native
 # build mode
 ifneq ($(DEBUG), )
 	CFLAGS  	+= -Wextra -Werror -g -O0 -fsanitize=address
-	CPPFLAGS	+= -DDEBUG -Wno-unused-variable -Wno-unused-parameter
+	CPPFLAGS	+= -DDEBUG -Wno-unused-variable -Wno-unused-function -Wno-unused-parameter
 	BDIR	 	= build/debug
 else
 	CFLAGS  	+= -O3
