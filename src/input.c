@@ -12,11 +12,17 @@ void new_input(struct wl_listener *listener, void *data) {
   case WLR_INPUT_DEVICE_POINTER:
     wlr_log(WLR_INFO, "New pointer\n");
     // handle pointer device
-    init_cursor(state);
+    init_cursor(state, device);
     break;
   default:
     wlr_log(WLR_INFO, "New unsupported device\n");
   }
+
+  uint32_t caps = WL_SEAT_CAPABILITY_POINTER;
+  if (!wl_list_empty(&state->keyboards)) {
+    caps |= WL_SEAT_CAPABILITY_KEYBOARD;
+  }
+  wlr_seat_set_capabilities(state->seat, caps);
 }
 
 void init_input(struct k_state *state) {
