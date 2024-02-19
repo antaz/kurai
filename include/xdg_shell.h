@@ -28,5 +28,6 @@ struct k_toplevel {
 };
 
 void init_xdg_shell(struct k_state *state);
+void focus_toplevel(struct k_toplevel *toplevel, struct wlr_surface *surface);
 
 #endif /* XDG_SHELL_H */
