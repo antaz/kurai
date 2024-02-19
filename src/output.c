@@ -99,9 +99,6 @@ void new_output(struct wl_listener *listener, void *data) {
 }
 
 void init_output(struct k_state *state) {
-  // initialize list of outputs
-  wl_list_init(&state->outputs);
-
   state->wlr_output_manager = wlr_output_manager_v1_create(state->display);
 
   // listen to new_output event

@@ -52,6 +52,11 @@ bool init_state(struct k_state *state) {
   state->xdg_output_manager =
       wlr_xdg_output_manager_v1_create(state->display, state->output_layout);
 
+  // initialize lists
+  wl_list_init(&state->outputs);
+  wl_list_init(&state->keyboards);
+  wl_list_init(&state->toplevels);
+
   return true;
 }
 
@@ -83,9 +88,6 @@ bool start_backend(struct k_state *state) {
 
   // create device manager
   wlr_data_device_manager_create(state->display);
-
-  // initialize toplevels list
-  wl_list_init(&state->toplevels);
 
   // initialize xdg shell
   init_xdg_shell(state);
