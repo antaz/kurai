@@ -10,12 +10,15 @@ TAG		= etags
 # vpath
 VPATH		= src:test
 
+# include
+INCLUDE     = include
+
 # build dir
 BDIR		= build
 
 # Flags
 CFLAGS		= -Wall
-CPPFLAGS	= -DWLR_USE_UNSTABLE=1 -I/usr/include/libdrm -I/usr/include/pixman-1 -Isrc
+CPPFLAGS	= -DWLR_USE_UNSTABLE=1 -I/usr/include/libdrm -I/usr/include/pixman-1 -I$(INCLUDE)
 LDFLAGS		= 
 LDLIBS      = -lwayland-server -lwlroots
 
@@ -33,15 +36,13 @@ else
 	BDIR	 	= build/release
 endif
 
-all: $(BDIR)/kurai
+all: $(BDIR)/kurai $(patsubst protocol/%.xml, $(INCLUDE)/%.h, $(wildcard protocol/*.xml))
 
-$(BDIR)/kurai: $(BDIR)/kurai.o $(BDIR)/kurai.a
+include/%.h: protocol/%.xml
+	wayland-scanner server-header $< $@
+
+$(BDIR)/kurai: $(patsubst src/%.c,$(BDIR)/%.o,$(wildcard src/*.c))
 	$(LD) $(LDFLAGS) $(CFLAGS) $^ $(LDLIBS) -o $@
-
-$(BDIR)/kurai.a: $(filter-out %/kurai.o,$(patsubst src/%.c,$(BDIR)/%.o,$(wildcard src/*.c)))
-
-$(BDIR)/%.a:
-	$(AR) rcs $@ $^
 
 $(BDIR)/%.o: %.c $(BDIR)/%.d
 	@mkdir -p $(@D)
