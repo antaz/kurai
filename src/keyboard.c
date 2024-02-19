@@ -50,17 +50,17 @@ static void keyboard_modifiers(struct wl_listener *listener, void *data) {
   struct k_keyboard *keyboard = wl_container_of(listener, keyboard, modifiers);
 
   wlr_seat_set_keyboard(keyboard->state->seat, keyboard->wlr_keyboard);
-wlr_seat_keyboard_notify_modifiers(keyboard->state->seat,
-		&keyboard->wlr_keyboard->modifiers);
+  wlr_seat_keyboard_notify_modifiers(keyboard->state->seat,
+                                     &keyboard->wlr_keyboard->modifiers);
 }
 
 static void keyboard_destroy(struct wl_listener *listener, void *data) {
-struct k_keyboard *keyboard = wl_container_of(listener, keyboard, destroy);
-wl_list_remove(&keyboard->modifiers.link);
-wl_list_remove(&keyboard->key.link);
-wl_list_remove(&keyboard->destroy.link);
-wl_list_remove(&keyboard->link);
-free(keyboard);
+  struct k_keyboard *keyboard = wl_container_of(listener, keyboard, destroy);
+  wl_list_remove(&keyboard->modifiers.link);
+  wl_list_remove(&keyboard->key.link);
+  wl_list_remove(&keyboard->destroy.link);
+  wl_list_remove(&keyboard->link);
+  free(keyboard);
 }
 
 void init_keyboard(struct k_state *state, struct wlr_input_device *device) {
