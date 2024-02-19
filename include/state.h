@@ -49,6 +49,9 @@ struct k_state {
   struct wl_list outputs;
   struct wl_list keyboards;
   struct wl_list toplevels;
+
+  // grabbed toplevel
+  struct k_toplevel *grabbed_toplevel;
 };
 
 bool init_state(struct k_state *state);
