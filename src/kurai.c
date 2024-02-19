@@ -6,9 +6,8 @@
 
 struct k_state state = {0};
 
-void
-termination_handler (int signum) {
-  switch(signum) {
+void termination_handler(int signum) {
+  switch (signum) {
   case SIGINT:
   case SIGTERM:
     wl_display_terminate(state.display);
@@ -31,16 +30,16 @@ int main() {
 
   if (startup_cmd) {
     if (fork() == 0) {
-      execl("/bin/sh", "/bin/sh", "-c", startup_cmd, (char *) NULL);
+      execl("/bin/sh", "/bin/sh", "-c", startup_cmd, (char *)NULL);
     }
   }
 
-  if (signal (SIGINT, termination_handler) == SIG_IGN)
-    signal (SIGINT, SIG_IGN);
-  if (signal (SIGHUP, termination_handler) == SIG_IGN)
-    signal (SIGHUP, SIG_IGN);
-  if (signal (SIGTERM, termination_handler) == SIG_IGN)
-    signal (SIGTERM, SIG_IGN);
+  if (signal(SIGINT, termination_handler) == SIG_IGN)
+    signal(SIGINT, SIG_IGN);
+  if (signal(SIGHUP, termination_handler) == SIG_IGN)
+    signal(SIGHUP, SIG_IGN);
+  if (signal(SIGTERM, termination_handler) == SIG_IGN)
+    signal(SIGTERM, SIG_IGN);
 
   wl_display_run(state.display);
 
