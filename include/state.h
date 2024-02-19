@@ -47,8 +47,7 @@ struct k_state {
 
   // Lists
   struct wl_list outputs;
-
-  // toplevels
+  struct wl_list keyboards;
   struct wl_list toplevels;
 };
 
