@@ -7,7 +7,6 @@ static bool handle_keybinding(struct k_state *state, xkb_keysym_t sym) {
     wl_display_terminate(state->display);
     break;
   case XKB_KEY_F1:
-    /* Cycle to the next toplevel */
     if (wl_list_length(&state->toplevels) < 2) {
       break;
     }
@@ -26,9 +25,7 @@ static void keyboard_key(struct wl_listener *listener, void *data) {
   struct wlr_keyboard_key_event *event = data;
   struct wlr_seat *seat = state->seat;
 
-  /* Translate libinput keycode -> xkbcommon */
   uint32_t keycode = event->keycode + 8;
-  /* Get a list of keysyms based on the keymap for this keyboard */
   const xkb_keysym_t *syms;
   int nsyms =
       xkb_state_key_get_syms(keyboard->wlr_keyboard->xkb_state, keycode, &syms);
@@ -43,14 +40,19 @@ static void keyboard_key(struct wl_listener *listener, void *data) {
   }
 
   if (!handled) {
-    /* Otherwise, we pass it along to the client. */
     wlr_seat_set_keyboard(seat, keyboard->wlr_keyboard);
     wlr_seat_keyboard_notify_key(seat, event->time_msec, event->keycode,
                                  event->state);
   }
 }
 
-static void keyboard_modifiers(struct wl_listener *listener, void *data) {}
+static void keyboard_modifiers(struct wl_listener *listener, void *data) {
+  struct k_keyboard *keyboard = wl_container_of(listener, keyboard, modifiers);
+
+  wlr_seat_set_keyboard(keyboard->state->seat, keyboard->wlr_keyboard);
+wlr_seat_keyboard_notify_modifiers(keyboard->state->seat,
+		&keyboard->wlr_keyboard->modifiers);
+}
 
 static void keyboard_destroy(struct wl_listener *listener, void *data) {}
 
