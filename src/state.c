@@ -1,5 +1,6 @@
 #include "state.h"
 #include "output.h"
+#include "xdg_shell.h"
 
 bool init_state(struct k_state *state) {
   // create display
@@ -76,6 +77,8 @@ bool start_backend(struct k_state *state) {
 
   // create device manager
   wlr_data_device_manager_create(state->display);
+
+  init_xdg_shell(state);
 
   return true;
 }

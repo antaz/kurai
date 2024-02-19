@@ -13,6 +13,7 @@
 #include <wlr/types/wlr_screencopy_v1.h>
 #include <wlr/types/wlr_subcompositor.h>
 #include <wlr/types/wlr_xdg_output_v1.h>
+#include <wlr/types/wlr_xdg_shell.h>
 #include <wlr/util/log.h>
 
 #include <stdlib.h>
@@ -35,12 +36,18 @@ struct k_state {
   struct wlr_xdg_output_manager_v1 *xdg_output_manager;
   struct wlr_output_manager_v1 *wlr_output_manager;
 
+  struct wlr_xdg_shell *xdg_shell;
+
   // Listeners for state events
   struct wl_listener new_input;
   struct wl_listener new_output;
+  struct wl_listener new_xdg_surface;
 
   // Lists
   struct wl_list outputs;
+
+  // toplevels
+  struct wl_list toplevels;
 };
 
 bool init_state(struct k_state *state);
