@@ -1,0 +1,12 @@
+name: build
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: alpine:edge
+    steps:
+    - name: dependencies
+    - run: apk add clang libevdev-dev libinput-dev libxkbcommon-dev libxml2-dev meson musl-dev wayland-dev wayland-protocols wlroots-dev xwayland
+    - uses: actions/checkout@v3
+    - name: make
+      run: make
