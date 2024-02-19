@@ -82,3 +82,12 @@ bool start_backend(struct k_state *state) {
 
   return true;
 }
+
+void destroy_state(struct k_state *state) {
+  wl_display_destroy_clients(state->display);
+  wlr_output_layout_destroy(state->output_layout);
+  wl_display_destroy(state->display);
+  wlr_scene_node_destroy(&state->scene->tree.node);
+
+  wlr_log(WLR_INFO, "Destroyed display\n");
+}

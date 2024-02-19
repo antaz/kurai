@@ -54,4 +54,6 @@ bool init_state(struct k_state *state);
 
 bool start_backend(struct k_state *state);
 
+void destroy_state(struct k_state *state);
+
 #endif /* STATE_H */
