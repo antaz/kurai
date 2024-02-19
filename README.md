@@ -3,7 +3,7 @@
 
 ## Dependencies
 - Wayland
-- wlroots
+- wlroots 0.17
 - libinput
 - xkbcommon
 
