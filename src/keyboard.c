@@ -1,7 +1,20 @@
+#include <wlr/backend/session.h>
+
 #include "keyboard.h"
 #include "xdg_shell.h"
 
-static bool handle_keybinding(struct k_state *state, xkb_keysym_t sym) {
+static bool handle_keybinding(struct k_state *state, xkb_keysym_t sym,
+                              uint32_t modifiers) {
+
+  // switch virtual terminal
+  if (modifiers & (WLR_MODIFIER_CTRL | WLR_MODIFIER_ALT) &&
+      sym >= XKB_KEY_XF86Switch_VT_1 && sym <= XKB_KEY_XF86Switch_VT_12) {
+    unsigned int vt = sym - XKB_KEY_XF86Switch_VT_1 + 1;
+    wlr_session_change_vt(state->session, vt);
+
+    return true;
+  }
+
   switch (sym) {
   case XKB_KEY_Escape:
     wl_display_terminate(state->display);
@@ -35,7 +48,7 @@ static void keyboard_key(struct wl_listener *listener, void *data) {
   if ((modifiers & WLR_MODIFIER_ALT) &&
       event->state == WL_KEYBOARD_KEY_STATE_PRESSED) {
     for (int i = 0; i < nsyms; i++) {
-      handled = handle_keybinding(state, syms[i]);
+      handled = handle_keybinding(state, syms[i], modifiers);
     }
   }
 
