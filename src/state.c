@@ -62,6 +62,7 @@ bool init_state(struct k_state *state) {
 
 bool start_backend(struct k_state *state) {
   init_output(state);
+  create_cursor(state);
   init_input(state);
 
   // create the scene
@@ -72,7 +73,7 @@ bool start_backend(struct k_state *state) {
   // create socket
   const char *socket = wl_display_add_socket_auto(state->display);
   if (!socket) {
-    wlr_log(WLR_ERROR, "FAILED TO CREATE SOCKET\n");
+    wlr_log(WLR_ERROR, "FAILED TO CREATE SOCKET");
     return false;
   }
 
@@ -80,7 +81,7 @@ bool start_backend(struct k_state *state) {
   if (!wlr_backend_start(state->backend)) {
     wlr_backend_destroy(state->backend);
     wl_display_destroy(state->display);
-    wlr_log(WLR_ERROR, "FAILED TO START BACKEND\n");
+    wlr_log(WLR_ERROR, "FAILED TO START BACKEND");
     return false;
   }
 
@@ -102,5 +103,5 @@ void destroy_state(struct k_state *state) {
   wl_display_destroy(state->display);
   wlr_scene_node_destroy(&state->scene->tree.node);
 
-  wlr_log(WLR_INFO, "Destroyed display\n");
+  wlr_log(WLR_INFO, "Destroyed display");
 }
