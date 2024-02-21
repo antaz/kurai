@@ -171,16 +171,19 @@ static void request_cursor(struct wl_listener *listener, void *data) {
 }
 
 void init_cursor(struct k_state *state, struct wlr_input_device *device) {
+  wlr_cursor_attach_input_device(state->cursor->wlr_cursor, device);
+}
+
+void create_cursor(struct k_state *state) {
   struct k_cursor *cursor = calloc(1, sizeof(struct k_cursor));
   cursor->wlr_cursor = wlr_cursor_create();
+  wlr_cursor_attach_output_layout(cursor->wlr_cursor, state->output_layout);
   cursor->cursor_mode = K_CURSOR_PASSTHROUGH;
   cursor->state = state;
   state->cursor = cursor;
 
   const char *xcursor_size = getenv("XCURSOR_SIZE");
-  cursor->xcursor_manager = wlr_xcursor_manager_create(
-      getenv("XCURSOR_THEME"),
-      xcursor_size ? strtoul(xcursor_size, (char **)NULL, 10) : 24);
+  cursor->xcursor_manager = wlr_xcursor_manager_create(NULL, 24);
 
   cursor->axis.notify = cursor_axis;
   wl_signal_add(&cursor->wlr_cursor->events.axis, &cursor->axis);
@@ -201,12 +204,10 @@ void init_cursor(struct k_state *state, struct wlr_input_device *device) {
   cursor->request_cursor.notify = request_cursor;
   wl_signal_add(&state->seat->events.request_set_cursor,
                 &cursor->request_cursor);
-
-  wlr_cursor_attach_output_layout(cursor->wlr_cursor, state->output_layout);
-  wlr_cursor_attach_input_device(cursor->wlr_cursor, device);
 }
 
 void destroy_cursor(struct k_cursor *cursor) {
+  wlr_log(WLR_INFO, "Destroy cursor");
   wlr_xcursor_manager_destroy(cursor->xcursor_manager);
   wlr_cursor_destroy(cursor->wlr_cursor);
   free(cursor);
