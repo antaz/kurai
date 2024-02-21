@@ -11,10 +11,11 @@ void focus_toplevel(struct k_toplevel *toplevel, struct wlr_surface *surface) {
       wlr_xdg_surface_try_from_wlr_surface(surface);
 
   struct k_state *state = toplevel->state;
+
   struct wlr_seat *seat = state->seat;
   struct wlr_surface *prev_surface = seat->keyboard_state.focused_surface;
 
-  if (prev_surface) {
+  if (prev_surface != NULL) {
     struct wlr_xdg_toplevel *prev_toplevel =
         wlr_xdg_toplevel_try_from_wlr_surface(prev_surface);
     if (prev_toplevel != NULL) {
@@ -67,9 +68,24 @@ void begin_interactive(struct k_toplevel *toplevel, enum k_cursor_mode mode,
   }
 }
 
-static void toplevel_map(struct wl_listener *listener, void *data) {}
+static void toplevel_map(struct wl_listener *listener, void *data) {
+  struct k_toplevel *toplevel = wl_container_of(listener, toplevel, map);
 
-static void toplevel_unmap(struct wl_listener *listener, void *data) {}
+  wl_list_insert(&toplevel->state->toplevels, &toplevel->link);
+
+  focus_toplevel(toplevel, toplevel->xdg_toplevel->base->surface);
+}
+
+static void toplevel_unmap(struct wl_listener *listener, void *data) {
+  struct k_toplevel *toplevel = wl_container_of(listener, toplevel, unmap);
+
+  if (toplevel == toplevel->state->grabbed_toplevel) {
+    toplevel->state->cursor->cursor_mode = K_CURSOR_PASSTHROUGH;
+    toplevel->state->grabbed_toplevel = NULL;
+  }
+
+  wl_list_remove(&toplevel->link);
+}
 
 static void toplevel_commit(struct wl_listener *listener, void *data) {}
 
@@ -87,7 +103,6 @@ static void toplevel_destroy(struct wl_listener *listener, void *data) {
   wl_list_remove(&toplevel->request_move.link);
   wl_list_remove(&toplevel->request_resize.link);
 
-  wl_list_remove(&toplevel->link);
   free(toplevel);
 }
 
