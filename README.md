@@ -1,5 +1,5 @@
 # Kurai
-**WIP** simple `wlroots` based wayland compositor
+Simple `wlroots` based wayland compositor
 
 ## Dependencies
 - Wayland
@@ -16,3 +16,16 @@ make -j4
 foot is a wayland terminal
 ```
 ./build/release/kurai -s /bin/foot
+```
+
+## Roadmap
+
+- [x] Backend creation and initialization
+- [x] Output create and initalize
+- [x] Keyboard implementation
+- [x] Pointer (and cursor) implementation
+- [x] XDG-SHELL implementation
+- [] XDG-LAYER-SHELL implementation
+- [] `wlr_idle_inhibit_v1`
+- [] Toplevels indicators
+- [] Configuration
