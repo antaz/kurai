@@ -1,5 +1,5 @@
 # Kurai
-Simple `wlroots` based wayland compositor
+Simple **WLRoots** based wayland compositor
 
 ## Dependencies
 - Wayland
