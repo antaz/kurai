@@ -25,7 +25,7 @@ foot is a wayland terminal
 - [x] Keyboard implementation
 - [x] Pointer (and cursor) implementation
 - [x] XDG-SHELL implementation
-- [] XDG-LAYER-SHELL implementation
-- [] `wlr_idle_inhibit_v1`
-- [] Toplevels indicators
-- [] Configuration
+- [ ] XDG-LAYER-SHELL implementation
+- [ ] `wlr_idle_inhibit_v1`
+- [ ] Toplevels indicators
+- [ ] Configuration
