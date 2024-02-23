@@ -26,6 +26,8 @@ foot is a wayland terminal
 - [x] Pointer (and cursor) implementation
 - [x] XDG-SHELL implementation
 - [ ] XDG-LAYER-SHELL implementation
+	- [ ] Create surfaces
+	- [ ] Implement `map`, `unmap` and `destroy`
 - [ ] `wlr_idle_inhibit_v1`
 - [ ] Toplevels indicators
 - [ ] Configuration
