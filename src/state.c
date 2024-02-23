@@ -2,6 +2,7 @@
 #include "cursor.h"
 #include "input.h"
 #include "output.h"
+#include "xdg_layer.h"
 #include "xdg_shell.h"
 
 bool init_state(struct k_state *state) {
@@ -92,6 +93,7 @@ bool start_backend(struct k_state *state) {
 
   // initialize xdg shell
   init_xdg_shell(state);
+  init_layer(state);
 
   return true;
 }

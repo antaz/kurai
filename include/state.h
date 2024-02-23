@@ -39,11 +39,13 @@ struct k_state {
   struct wlr_output_manager_v1 *wlr_output_manager;
 
   struct wlr_xdg_shell *xdg_shell;
+  struct wlr_layer_shell_v1 *layer_shell;
 
   // Listeners for state events
   struct wl_listener new_input;
   struct wl_listener new_output;
   struct wl_listener new_xdg_surface;
+  struct wl_listener new_layer_surface;
 
   // Lists
   struct wl_list outputs;
