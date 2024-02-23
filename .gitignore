@@ -1,4 +1,3 @@
 build
-protocol
 include/xdg-shell-protocol.h
 include/wlr-layer-shell-unstable-v1-protocol.h
